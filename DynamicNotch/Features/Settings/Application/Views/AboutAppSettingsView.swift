@@ -7,22 +7,6 @@
 
 import SwiftUI
 
-enum AboutAppTab: String, CaseIterable, Identifiable {
-    case about
-    case support
-    
-    var id: String { rawValue }
-    
-    var titleKey: LocalizedStringKey {
-        switch self {
-        case .about:
-            return "settings.section.about.title"
-        case .support:
-            return "settings.general.support.title"
-        }
-    }
-}
-
 struct AboutAppSettingsView: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.colorScheme) private var colorScheme
@@ -30,8 +14,6 @@ struct AboutAppSettingsView: View {
     @ObservedObject private var updater = SparkleUpdater.shared
     
     let onRequestInternetAccess: () -> Bool
-    
-    @State private var selectedTab: AboutAppTab = .about
     
     private var currentVersion: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
@@ -43,37 +25,12 @@ struct AboutAppSettingsView: View {
     }
     
     var body: some View {
-        Group {
-            switch selectedTab {
-            case .about:
-                aboutTab
-            case .support:
-                SupportSettingsView(onRequestInternetAccess: onRequestInternetAccess)
-            }
-        }
+        aboutTab
         .accessibilityIdentifier("settings.about.root")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Picker("", selection: $selectedTab.animation(.easeInOut(duration: 0.2))) {
-                    ForEach(AboutAppTab.allCases) { tab in
-                        Text(tab.titleKey).tag(tab)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-            }
-            ToolbarItem(placement: .primaryAction) {
                 Text(appVersionText)
                     .padding(.horizontal, 10)
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SelectSettingsSubPage"))) { notification in
-            if let subPage = notification.object as? SettingsSubPage {
-                if subPage == .support {
-                    selectedTab = .support
-                } else if subPage == .about || subPage == .softwareUpdate {
-                    selectedTab = .about
-                }
             }
         }
     }
@@ -158,24 +115,13 @@ struct AboutAppSettingsView: View {
     private var socialLinksCard: some View {
         SettingsCard(title: "settings.about.card.socialLinks", spacing: 0, padding: 0) {
             SettingsUrlRowView(
-                title: "settings.about.telegramChannel.title",
-                description: "settings.about.telegramChannel.desc",
-                imageName: "telegram",
-                color: .clear,
-                cornerRadius: 30,
-                position: .first,
-                url: "https://t.me/Dynamic_Notch",
-                onRequestInternetAccess: onRequestInternetAccess
-            )
-            
-            SettingsUrlRowView(
                 title: "settings.about.github.title",
                 description: "settings.about.github.desc",
                 imageName: "gitHub",
                 color: .clear,
                 cornerRadius: 30,
-                position: .middle,
-                url: "https://github.com/jackson-storm/DynamicNotch",
+                position: .first,
+                url: "https://github.com/JasonForReels/Notchhaven",
                 onRequestInternetAccess: onRequestInternetAccess
             )
             
@@ -195,24 +141,13 @@ struct AboutAppSettingsView: View {
     private var contactMeCard: some View {
         SettingsCard(title: "settings.about.card.contact", spacing: 0, padding: 0) {
             SettingsUrlRowView(
-                title: "settings.about.telegramAccount.title",
-                description: "settings.about.telegramAccount.desc",
-                imageName: "telegram",
-                color: .clear,
-                cornerRadius: 30,
-                position: .first,
-                url: "https://t.me/id10101101",
-                onRequestInternetAccess: onRequestInternetAccess
-            )
-            
-            SettingsUrlRowView(
                 title: "settings.about.email.title",
                 description: "settings.about.email.desc",
                 imageName: "email",
                 color: .clear,
                 cornerRadius: 30,
                 position: .last,
-                url: "mailto:evgeniy.petrukovich@icloud.com?subject=A%20question%20about%20DynamicNotch",
+                url: "mailto:jasonlook09@yahoo.com?subject=A%20question%20about%20DynamicNotch",
                 onRequestInternetAccess: onRequestInternetAccess
             )
         }

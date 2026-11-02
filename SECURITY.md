@@ -16,7 +16,7 @@ If you are testing a local or modified build, please verify the issue against th
 
 Please do not open a public GitHub issue for suspected security vulnerabilities.
 
-Instead, send a report to **evgeniy.petrukovich@icloud.com** with the subject line:
+Instead, send a report to **jasonlook09@yahoo.com** with the subject line:
 
 `DynamicNotch Security Report`
 

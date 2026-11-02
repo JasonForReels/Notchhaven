@@ -14,14 +14,8 @@
 </p>
 
 <p align="center">
-  <a href="https://t.me/Dynamic_Notch">
-    <img src="https://img.shields.io/badge/Telegram-Join%20Channel-26A5E4?style=for-the-badge&logo=telegram&logoColor=white&labelColor=26A5E4" alt="Join the Telegram channel" />
-  </a>
-  <a href="mailto:evgeniy.petrukovich@icloud.com?subject=A%20question%20about%20Dynamic%20Notch">
+  <a href="mailto:jasonlook09@yahoo.com?subject=A%20question%20about%20Dynamic%20Notch">
     <img src="https://img.shields.io/badge/Email-Contact%20Me-0A84FF?style=for-the-badge&logo=icloud&logoColor=white&labelColor=0A84FF" alt="Send an email about DynamicNotch" />
-  </a>
-  <a href="https://t.me/id10101101">
-    <img src="https://img.shields.io/badge/Telegram-Contact%20Me-229ED9?style=for-the-badge&logo=telegram&logoColor=white&labelColor=229ED9" alt="Contact me on Telegram" />
   </a>
 </p>
 
@@ -36,15 +30,6 @@
     <img src="https://img.shields.io/github/license/jackson-storm/DynamicNotch?style=for-the-badge&label=License&color=blueviolet" alt="License" />
   </a>
   <img src="https://img.shields.io/badge/macOS-14.6%2B-red?style=for-the-badge&logo=apple&logoColor=white" alt="macOS 14.6 or later" />
-</p>
-
-<p align="center">
-  <a href="https://boosty.to/jacksonstormdev">
-    <img src="https://img.shields.io/badge/Boosty-Support-F58220?style=for-the-badge&logo=boosty&logoColor=white" alt="Support on Boosty" />
-  </a>
-  <a href="https://www.donationalerts.com/r/jacksonstormdev">
-    <img src="https://img.shields.io/badge/DonationAlerts-Donate-FF9A00?style=for-the-badge&logo=donationalerts&logoColor=white" alt="Donate via Donation Alerts" />
-  </a>
 </p>
 
 <p align="center">
@@ -140,22 +125,6 @@ Then run the `DynamicNotch` scheme from Xcode. Swift Package Manager dependencie
 ## 🌍 Localization
 
 DynamicNotch features full native localization support for **38+ languages** across interface elements, notch activities, and settings. You can switch languages instantly in the app settings.
-
-## 💖 Support
-
-Without your support, the project will not be able to develop. If you would like to support the project, you can do so via:
-
-### Services
-
-- **Boosty**: [Support development or subscribe](https://boosty.to/jacksonstormdev)
-- **Donation Alerts**: [One-time donation via cards or crypto](https://www.donationalerts.com/r/jacksonstormdev)
-
-### Cryptocurrency
-
-- **USDT (TRC-20)**: `TWYo42HQNuXSA5gmVoVV1973ScPqCtduvA`
-- **USDT (ERC-20)**: `0xd3261630d7EC2484A3fcf5315f194B58834ab891`
-- **Bitcoin (BTC)**: `bc1qw29074zwlp600rhvjat2v7ks53h835tthfj7dx`
-
 
 ## 🤝 Acknowledgements
 

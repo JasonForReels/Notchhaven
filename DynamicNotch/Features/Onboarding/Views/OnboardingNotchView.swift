@@ -34,8 +34,6 @@ struct OnboardingNotchView: View {
             OnboardingNotchSecondStepView()
         case .third:
             OnboardingNotchThirdStepView()
-        case .fourth:
-            OnboardingNotchFourthStepView()
         }
     }
     
@@ -108,33 +106,6 @@ struct OnboardingNotchView: View {
                 
                 Spacer()
                 
-                Button(action: {
-                    onStepChange(.fourth)
-                }) {
-                    Text(locale.dn("notch.onboarding.continue", fallback: "Continue"))
-                        .fontWeight(.medium)
-                        .foregroundStyle(.blue)
-                }
-                .buttonStyle(PrimaryButtonStyle(height: 35, backgroundColor: .blue.opacity(0.25)))
-            }
-
-        case .fourth:
-            HStack {
-                Button(action: {
-                    guard let url = URL(string: "https://t.me/Dynamic_Notch") else {
-                        return
-                    }
-                    openURL(url)
-                    onFinish()
-                }) {
-                    Text(locale.dn("notch.onboarding.openTelegram", fallback: "Open Telegram"))
-                        .fontWeight(.medium)
-                        .foregroundStyle(.white)
-                }
-                .buttonStyle(PrimaryButtonStyle(height: 35, backgroundColor: .gray.opacity(0.25)))
-
-                Spacer()
-
                 Button(action: {
                     onFinish()
                 }) {
