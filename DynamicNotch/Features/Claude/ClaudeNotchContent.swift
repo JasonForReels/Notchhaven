@@ -5,7 +5,8 @@ import SwiftUI
 enum ClaudeLayout {
     static func compactExtraWidth(_ activity: ClaudeActivity?) -> CGFloat {
         let label = activity?.compactLabel ?? activity?.headline ?? ""
-        return max(170, min(260, 110 + 7 * CGFloat(label.count)))
+        // Each side of the hardware notch needs room for the icon or the label.
+        return max(110, min(260, 2 * (7.5 * CGFloat(label.count) + 26)))
     }
 
     static func expandedExtraWidth(_ activity: ClaudeActivity?) -> CGFloat {

@@ -91,7 +91,7 @@ final class ClaudeLayoutTests: XCTestCase {
     }
 
     func testCompactWidthGrowsWithLabelButStaysBounded() {
-        XCTAssertEqual(ClaudeLayout.compactExtraWidth(activity(label: "Read")), 170)
+        XCTAssertEqual(ClaudeLayout.compactExtraWidth(activity(label: "Read")), 112)
         XCTAssertGreaterThan(ClaudeLayout.compactExtraWidth(activity(label: "list all the files")), 220)
         XCTAssertEqual(ClaudeLayout.compactExtraWidth(activity(label: String(repeating: "x", count: 80))), 260)
     }
