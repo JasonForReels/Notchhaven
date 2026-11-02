@@ -49,3 +49,10 @@ final class ClaudeActivityTests: XCTestCase {
         guard case .rejected = ClaudeEventServer.parse(request("GET /event HTTP/1.1", header: true)) else { return XCTFail() }
     }
 }
+
+final class ClaudeToolLabelTests: XCTestCase {
+    func testMcpToolNamesAreShortened() {
+        XCTAssertEqual(ClaudeActivityReducer.toolLabel("mcp__server__list_files"), "list files")
+        XCTAssertEqual(ClaudeActivityReducer.toolLabel("Bash"), "Bash")
+    }
+}

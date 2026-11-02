@@ -36,7 +36,7 @@ enum ClaudeActivityReducer {
         case "UserPromptSubmit":
             return .init(phase: .working, headline: "Thinking", detail: clip(payload.prompt ?? ""), project: project)
         case "PreToolUse":
-            return .init(phase: .working, headline: payload.tool_name.map { "Running \($0)" } ?? "Working", detail: "", project: project)
+            return .init(phase: .working, headline: payload.tool_name.map { "Running \(toolLabel($0))" } ?? "Working", detail: "", project: project)
         case "Notification":
             return .init(phase: .waiting, headline: "Needs you", detail: clip(payload.message ?? ""), project: project)
         case "Stop":
@@ -47,6 +47,12 @@ enum ClaudeActivityReducer {
         default:
             return nil
         }
+    }
+
+    /// `mcp__server__do_thing` -> `do thing`, so long MCP names stay readable.
+    static func toolLabel(_ name: String) -> String {
+        guard name.hasPrefix("mcp__"), let last = name.components(separatedBy: "__").last else { return name }
+        return last.replacingOccurrences(of: "_", with: " ")
     }
 
     static func clip(_ text: String) -> String {
