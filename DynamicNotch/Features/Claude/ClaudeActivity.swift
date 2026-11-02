@@ -51,15 +51,15 @@ enum ClaudeActivityReducer {
 
         switch payload.hook_event_name {
         case "UserPromptSubmit":
-            return .init(phase: .working, headline: "Thinking", detail: clip(payload.prompt ?? ""), project: project, expands: true)
+            return .init(phase: .working, headline: "Thinking", detail: "", project: project, expands: true, toolDetail: payload.prompt.flatMap { $0.isEmpty ? nil : "Working on: \(clip($0))" })
         case "PreToolUse":
             let narration = payload.transcript_path.flatMap(lastReply) ?? ""
             return .init(
                 phase: .working,
-                headline: payload.tool_name.map { "Running \(toolLabel($0))" } ?? "Working",
+                headline: "Working",
                 detail: clip(narration),
                 project: project,
-                compactLabel: payload.tool_name.map(toolLabel),
+                compactLabel: payload.tool_name.map(compactVerb),
                 toolDetail: toolSentence(name: payload.tool_name, input: payload.tool_input)
             )
         case "Notification":
@@ -88,9 +88,8 @@ enum ClaudeActivityReducer {
         case "Write":
             return file(input).map { "Writing \($0)" } ?? "Writing a file"
         case "Bash":
-            return input?.description.flatMap { $0.isEmpty ? nil : "Running: \(clip($0))" }
-                ?? input?.command.map { "Running: \(clip($0))" }
-                ?? "Running a command"
+            if let description = input?.description, !description.isEmpty { return clip(description) }
+            return humanizeCommand(input?.command)
         case "Grep", "Glob":
             return (input?.pattern).map { "Searching for \(clip($0))" } ?? "Searching the project"
         case "WebFetch":
@@ -101,6 +100,47 @@ enum ClaudeActivityReducer {
             return input?.description.map { "Delegating: \(clip($0))" } ?? "Delegating to a subagent"
         default:
             return "Using \(toolLabel(name))"
+        }
+    }
+
+    /// Plain words for a shell command, so the notch never shows the raw command line.
+    static func humanizeCommand(_ command: String?) -> String {
+        let text = (command ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return "Running a command" }
+        let rules: [(String, String)] = [
+            ("xcodebuild test", "Running the tests"), ("xcodebuild", "Building the app"),
+            ("swift test", "Running the tests"), ("swift build", "Building the project"),
+            ("npm test", "Running the tests"), ("npm run build", "Building the project"),
+            ("npm install", "Installing packages"), ("npm i ", "Installing packages"),
+            ("git commit", "Committing changes"), ("git push", "Pushing changes to GitHub"),
+            ("git pull", "Pulling the latest changes"), ("git merge", "Merging a branch"),
+            ("git checkout", "Switching branches"), ("git switch", "Switching branches"),
+            ("git status", "Checking what changed"), ("git diff", "Checking what changed"),
+            ("git log", "Reading the commit history"), ("git add", "Staging changes"),
+            ("gh pr", "Working with a pull request"), ("gh repo", "Working with the GitHub repo"),
+            ("curl ", "Making a web request"), ("pkill", "Stopping a process"), ("killall", "Stopping a process"),
+            ("open ", "Opening something"), ("codesign", "Signing the app"), ("ditto", "Copying files"),
+            ("cp ", "Copying files"), ("mv ", "Moving files"), ("rm ", "Deleting files"),
+            ("mkdir", "Creating a folder"), ("python", "Running a script"), ("sed ", "Editing text in files"),
+            ("grep", "Searching files"), ("find ", "Searching files"), ("ls", "Listing files"),
+            ("cat ", "Reading a file"), ("head ", "Reading a file"), ("tail ", "Reading a file"),
+            ("defaults", "Changing a setting"), ("sleep", "Waiting a moment"),
+        ]
+        for (needle, phrase) in rules where text.contains(needle) { return phrase }
+        return "Running a command"
+    }
+
+    /// One short verb for the compact bar.
+    static func compactVerb(_ name: String) -> String {
+        switch name {
+        case "Read": "Reading"
+        case "Edit", "MultiEdit", "NotebookEdit": "Editing"
+        case "Write": "Writing"
+        case "Bash": "Running"
+        case "Grep", "Glob": "Searching"
+        case "WebFetch", "WebSearch": "Browsing"
+        case "Task", "Agent": "Delegating"
+        default: toolLabel(name)
         }
     }
 

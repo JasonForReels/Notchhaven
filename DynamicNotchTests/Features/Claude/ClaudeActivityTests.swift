@@ -10,7 +10,7 @@ final class ClaudeActivityTests: XCTestCase {
         let p = try payload(#"{"hook_event_name":"UserPromptSubmit","prompt":"fix the bug","cwd":"/Users/me/app"}"#)
         let activity = ClaudeActivityReducer.reduce(p) { _ in nil }
         XCTAssertEqual(activity?.phase, .working)
-        XCTAssertEqual(activity?.detail, "fix the bug")
+        XCTAssertEqual(activity?.toolDetail, "Working on: fix the bug")
         XCTAssertEqual(activity?.project, "app")
     }
 
@@ -41,7 +41,7 @@ final class ClaudeActivityTests: XCTestCase {
         let p = try payload(#"{"hook_event_name":"PreToolUse","tool_name":"Read","transcript_path":"/x.jsonl"}"#)
         let activity = ClaudeActivityReducer.reduce(p) { _ in "Reading the config first" }
         XCTAssertEqual(activity?.detail, "Reading the config first")
-        XCTAssertEqual(activity?.compactLabel, "Read")
+        XCTAssertEqual(activity?.compactLabel, "Reading")
     }
 
     func testToolSentenceDescribesWhatClaudeIsDoing() throws {
@@ -50,7 +50,9 @@ final class ClaudeActivityTests: XCTestCase {
         }
         XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Read","tool_input":{"file_path":"/a/b/File.swift"}}"#), "Reading File.swift")
         XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Edit","tool_input":{"file_path":"/a/Other.swift"}}"#), "Editing Other.swift")
-        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"ls","description":"List files"}}"#), "Running: List files")
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"ls","description":"List files"}}"#), "List files")
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"xcodebuild test -scheme X"}}"#), "Running the tests")
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"weirdtool --flag"}}"#), "Running a command")
         XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Grep","tool_input":{"pattern":"TODO"}}"#), "Searching for TODO")
         XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"mcp__x__make_thing"}"#), "Using make thing")
     }
