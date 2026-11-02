@@ -33,7 +33,7 @@ final class OvhLyricsProvider: LyricsProviding {
         guard let url = makeURL(for: snapshot) else { return nil }
 
         var request = URLRequest(url: url)
-        request.setValue("DynamicNotch/1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("Notchhaven/1.0", forHTTPHeaderField: "User-Agent")
 
         let (data, response) = try await session.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {

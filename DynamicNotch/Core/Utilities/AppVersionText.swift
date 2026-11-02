@@ -15,7 +15,7 @@ enum AppVersionText {
         case let (version?):
             return "v\(version)"
         default:
-            return "DynamicNotch"
+            return "Notchhaven"
         }
     }
 }

@@ -140,7 +140,7 @@ final class LRCLIBLyricsProvider: LyricsProviding {
     private func data(from url: URL, allowsNotFound: Bool) async throws -> Data? {
         var request = URLRequest(url: url)
         request.setValue(
-            "DynamicNotch/1.0 (https://github.com/JasonForReels/Notchhaven)",
+            "Notchhaven/1.0 (https://github.com/JasonForReels/Notchhaven)",
             forHTTPHeaderField: "User-Agent"
         )
 
