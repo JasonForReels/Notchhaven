@@ -55,7 +55,7 @@ struct MenuBarMenu: View {
             
             Toggle(isOn: $isClaudeActivityEnabled) {
                 Image(systemName: "sparkle")
-                Text(locale.dn("menuBar.claudeActivity", fallback: "Show Claude Activity"))
+                Text(ClaudeText.t("claude.menu.show", "Show Claude Activity"))
             }
             
             Divider()

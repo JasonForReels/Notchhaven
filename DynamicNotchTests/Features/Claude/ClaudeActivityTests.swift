@@ -2,6 +2,18 @@ import XCTest
 @testable import DynamicNotch
 
 final class ClaudeActivityTests: XCTestCase {
+    override func setUp() { ClaudeText.languageOverride = .english }
+    override func tearDown() { ClaudeText.languageOverride = nil }
+
+    func testWordingFollowsSelectedLanguage() throws {
+        ClaudeText.languageOverride = .spanish
+        let p = try payload(#"{"hook_event_name":"PreToolUse","tool_name":"Read","tool_input":{"file_path":"/a/A.swift"}}"#)
+        let activity = ClaudeActivityReducer.reduce(p) { _ in nil }
+        XCTAssertEqual(activity?.toolDetail, "Leyendo A.swift")
+        XCTAssertEqual(activity?.compactLabel, "Leyendo")
+        XCTAssertEqual(ClaudeActivityReducer.humanizeCommand("git push"), "Subiendo cambios a GitHub")
+    }
+
     private func payload(_ json: String) throws -> ClaudeHookPayload {
         try JSONDecoder().decode(ClaudeHookPayload.self, from: Data(json.utf8))
     }
@@ -81,6 +93,9 @@ final class ClaudeActivityTests: XCTestCase {
 }
 
 final class ClaudeToolLabelTests: XCTestCase {
+    override func setUp() { ClaudeText.languageOverride = .english }
+    override func tearDown() { ClaudeText.languageOverride = nil }
+
     func testMcpToolNamesAreShortened() {
         XCTAssertEqual(ClaudeActivityReducer.toolLabel("mcp__server__list_files"), "list files")
         XCTAssertEqual(ClaudeActivityReducer.toolLabel("Bash"), "Bash")

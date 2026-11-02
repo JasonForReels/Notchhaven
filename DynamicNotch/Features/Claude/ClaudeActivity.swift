@@ -51,22 +51,22 @@ enum ClaudeActivityReducer {
 
         switch payload.hook_event_name {
         case "UserPromptSubmit":
-            return .init(phase: .working, headline: "Thinking", detail: "", project: project, expands: true, toolDetail: payload.prompt.flatMap { $0.isEmpty ? nil : "Working on: \(clip($0))" })
+            return .init(phase: .working, headline: ClaudeText.t("claude.thinking", "Thinking"), detail: "", project: project, expands: true, toolDetail: payload.prompt.flatMap { $0.isEmpty ? nil : ClaudeText.f("claude.workingOn", "Working on: %@", clip($0)) })
         case "PreToolUse":
             let narration = payload.transcript_path.flatMap(lastReply) ?? ""
             return .init(
                 phase: .working,
-                headline: "Working",
+                headline: ClaudeText.t("claude.working", "Working"),
                 detail: clip(narration),
                 project: project,
                 compactLabel: payload.tool_name.map(compactVerb),
                 toolDetail: toolSentence(name: payload.tool_name, input: payload.tool_input)
             )
         case "Notification":
-            return .init(phase: .waiting, headline: "Needs you", detail: clip(payload.message ?? ""), project: project, expands: true)
+            return .init(phase: .waiting, headline: ClaudeText.t("claude.needsYou", "Needs you"), detail: clip(payload.message ?? ""), project: project, expands: true)
         case "Stop":
             let reply = payload.transcript_path.flatMap(lastReply) ?? ""
-            return .init(phase: .done, headline: "Done", detail: clip(reply), project: project, expands: true)
+            return .init(phase: .done, headline: ClaudeText.t("claude.done", "Done"), detail: clip(reply), project: project, expands: true)
         case "SessionEnd":
             return nil
         default:
@@ -80,67 +80,69 @@ enum ClaudeActivityReducer {
         func file(_ i: ClaudeHookPayload.ToolInput?) -> String? {
             (i?.file_path ?? i?.path).map { URL(fileURLWithPath: $0).lastPathComponent }
         }
+        func t(_ key: String, _ english: String) -> String { ClaudeText.t("claude.s.\(key)", english) }
+        func f(_ key: String, _ english: String, _ value: String) -> String { ClaudeText.f("claude.s.\(key)", english, value) }
+
         switch name {
         case "Read":
-            return file(input).map { "Reading \($0)" } ?? "Reading a file"
+            return file(input).map { f("readFile", "Reading %@", $0) } ?? t("readAFile", "Reading a file")
         case "Edit", "MultiEdit", "NotebookEdit":
-            return file(input).map { "Editing \($0)" } ?? "Editing a file"
+            return file(input).map { f("editFile", "Editing %@", $0) } ?? t("editAFile", "Editing a file")
         case "Write":
-            return file(input).map { "Writing \($0)" } ?? "Writing a file"
+            return file(input).map { f("writeFile", "Writing %@", $0) } ?? t("writeAFile", "Writing a file")
         case "Bash":
             if let description = input?.description, !description.isEmpty { return clip(description) }
             return humanizeCommand(input?.command)
         case "Grep", "Glob":
-            return (input?.pattern).map { "Searching for \(clip($0))" } ?? "Searching the project"
+            return input?.pattern.map { f("searchFor", "Searching for %@", clip($0)) } ?? t("searchProject", "Searching the project")
         case "WebFetch":
-            return (input?.url).map { "Fetching \(clip($0))" } ?? "Fetching a web page"
+            return input?.url.map { f("fetch", "Fetching %@", clip($0)) } ?? t("fetchPage", "Fetching a web page")
         case "WebSearch":
-            return (input?.query).map { "Searching the web for \(clip($0))" } ?? "Searching the web"
+            return input?.query.map { f("webSearchFor", "Searching the web for %@", clip($0)) } ?? t("webSearch", "Searching the web")
         case "Task", "Agent":
-            return input?.description.map { "Delegating: \(clip($0))" } ?? "Delegating to a subagent"
+            return input?.description.map { f("delegate", "Delegating: %@", clip($0)) } ?? t("delegateSub", "Delegating to a subagent")
         default:
-            return "Using \(toolLabel(name))"
+            return f("using", "Using %@", toolLabel(name))
         }
     }
 
     /// Plain words for a shell command, so the notch never shows the raw command line.
     static func humanizeCommand(_ command: String?) -> String {
+        func c(_ key: String, _ english: String) -> String { ClaudeText.t("claude.c.\(key)", english) }
         let text = (command ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return "Running a command" }
-        let rules: [(String, String)] = [
-            ("xcodebuild test", "Running the tests"), ("xcodebuild", "Building the app"),
-            ("swift test", "Running the tests"), ("swift build", "Building the project"),
-            ("npm test", "Running the tests"), ("npm run build", "Building the project"),
-            ("npm install", "Installing packages"), ("npm i ", "Installing packages"),
-            ("git commit", "Committing changes"), ("git push", "Pushing changes to GitHub"),
-            ("git pull", "Pulling the latest changes"), ("git merge", "Merging a branch"),
-            ("git checkout", "Switching branches"), ("git switch", "Switching branches"),
-            ("git status", "Checking what changed"), ("git diff", "Checking what changed"),
-            ("git log", "Reading the commit history"), ("git add", "Staging changes"),
-            ("gh pr", "Working with a pull request"), ("gh repo", "Working with the GitHub repo"),
-            ("curl ", "Making a web request"), ("pkill", "Stopping a process"), ("killall", "Stopping a process"),
-            ("open ", "Opening something"), ("codesign", "Signing the app"), ("ditto", "Copying files"),
-            ("cp ", "Copying files"), ("mv ", "Moving files"), ("rm ", "Deleting files"),
-            ("mkdir", "Creating a folder"), ("python", "Running a script"), ("sed ", "Editing text in files"),
-            ("grep", "Searching files"), ("find ", "Searching files"), ("ls", "Listing files"),
-            ("cat ", "Reading a file"), ("head ", "Reading a file"), ("tail ", "Reading a file"),
-            ("defaults", "Changing a setting"), ("sleep", "Waiting a moment"),
+        guard !text.isEmpty else { return c("generic", "Running a command") }
+
+        let rules: [(needles: [String], key: String, english: String)] = [
+            (["xcodebuild test", "swift test", "npm test", "pytest"], "tests", "Running the tests"),
+            (["xcodebuild", "swift build", "npm run build", "make"], "build", "Building the app"),
+            (["npm install", "npm i ", "pip install", "brew install"], "install", "Installing packages"),
+            (["git commit"], "commit", "Committing changes"),
+            (["git push"], "push", "Pushing changes to GitHub"),
+            (["git ", "gh "], "git", "Working with git"),
+            (["curl ", "wget "], "web", "Making a web request"),
+            (["pkill", "killall", "kill "], "stop", "Stopping a process"),
+            (["grep", "find ", "rg "], "search", "Searching files"),
+            (["python", "node ", "sh ", "bash "], "script", "Running a script"),
+            (["cp ", "mv ", "rm ", "mkdir", "ditto", "ls", "cat ", "head ", "tail ", "sed "], "files", "Working with files"),
         ]
-        for (needle, phrase) in rules where text.contains(needle) { return phrase }
-        return "Running a command"
+        for rule in rules where rule.needles.contains(where: { text.contains($0) }) {
+            return c(rule.key, rule.english)
+        }
+        return c("generic", "Running a command")
     }
 
     /// One short verb for the compact bar.
     static func compactVerb(_ name: String) -> String {
+        func v(_ key: String, _ english: String) -> String { ClaudeText.t("claude.verb.\(key)", english) }
         switch name {
-        case "Read": "Reading"
-        case "Edit", "MultiEdit", "NotebookEdit": "Editing"
-        case "Write": "Writing"
-        case "Bash": "Running"
-        case "Grep", "Glob": "Searching"
-        case "WebFetch", "WebSearch": "Browsing"
-        case "Task", "Agent": "Delegating"
-        default: toolLabel(name)
+        case "Read": return v("reading", "Reading")
+        case "Edit", "MultiEdit", "NotebookEdit": return v("editing", "Editing")
+        case "Write": return v("writing", "Writing")
+        case "Bash": return v("running", "Running")
+        case "Grep", "Glob": return v("searching", "Searching")
+        case "WebFetch", "WebSearch": return v("browsing", "Browsing")
+        case "Task", "Agent": return v("delegating", "Delegating")
+        default: return toolLabel(name)
         }
     }
 
