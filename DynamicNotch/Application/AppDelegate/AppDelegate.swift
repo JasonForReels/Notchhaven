@@ -78,6 +78,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
+        ClaudeActivityCenter.shared.start(notchViewModel: notchViewModel)
+
         applyActivationPolicy(
             showsDockIcon: isRunningUITests || settingsViewModel.application.isDockIconVisible
         )

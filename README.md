@@ -170,6 +170,27 @@ Special thanks to the following open-source projects and services that make Dyna
 
 DynamicNotch is released under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
 
+## Claude Code in the notch
+
+Notchhaven can show what Claude Code is doing (thinking, running a tool, waiting for you, done with a snippet of its reply).
+
+1. Turn on **Show Claude Activity** in the menu bar menu. This starts a listener on `127.0.0.1:26540` (loopback only, off by default).
+2. Add hooks to `~/.claude/settings.json`, pointing at `scripts/claude-notch-hook.sh` in this repo:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "/path/to/Notchhaven/scripts/claude-notch-hook.sh" }] }],
+    "PreToolUse":       [{ "hooks": [{ "type": "command", "command": "/path/to/Notchhaven/scripts/claude-notch-hook.sh" }] }],
+    "Notification":     [{ "hooks": [{ "type": "command", "command": "/path/to/Notchhaven/scripts/claude-notch-hook.sh" }] }],
+    "Stop":             [{ "hooks": [{ "type": "command", "command": "/path/to/Notchhaven/scripts/claude-notch-hook.sh" }] }],
+    "SessionEnd":       [{ "hooks": [{ "type": "command", "command": "/path/to/Notchhaven/scripts/claude-notch-hook.sh" }] }]
+  }
+}
+```
+
+Requests must be `POST /event` with an `X-Notchhaven-Client` header. Transcripts are only read from `~/.claude/` and only to show the last reply.
+
 ---
 
 Notchhaven is a fork of [DynamicNotch](https://github.com/jackson-storm/DynamicNotch) by jackson-storm, licensed under GPL-3.0.

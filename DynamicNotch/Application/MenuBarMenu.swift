@@ -11,6 +11,8 @@ struct MenuBarMenu: View {
     @ObservedObject private var updater = SparkleUpdater.shared
     @AppStorage(GeneralSettingsStorage.Keys.appLanguage) private var appLanguageRaw: String = DynamicNotchLanguage.system.rawValue
 
+    @AppStorage(ClaudeActivityCenter.enabledKey) private var isClaudeActivityEnabled = false
+
     private var locale: Locale {
         DynamicNotchLanguage.resolved(appLanguageRaw).locale
     }
@@ -42,6 +44,11 @@ struct MenuBarMenu: View {
             } label: {
                 Image(systemName: "gearshape")
                 Text(locale.dn("menuBar.settings", fallback: "Settings"))
+            }
+            
+            Toggle(isOn: $isClaudeActivityEnabled) {
+                Image(systemName: "sparkle")
+                Text(locale.dn("menuBar.claudeActivity", fallback: "Show Claude Activity"))
             }
             
             Divider()
