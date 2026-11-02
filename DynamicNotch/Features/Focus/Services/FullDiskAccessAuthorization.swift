@@ -1,14 +1,22 @@
 import Foundation
 
 enum FullDiskAccessAuthorization {
+    private static let home = FileManager.default.homeDirectoryForCurrentUser
+
     private static let probeURLs: [URL] = [
-        FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/com.apple.TCC/TCC.db"),
-        FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/DoNotDisturb/DB/ModeConfigurations.json")
+        home.appendingPathComponent("Library/DoNotDisturb/DB/Assertions.json"),
+        home.appendingPathComponent("Library/DoNotDisturb/DB/ModeConfigurations.json"),
+        home.appendingPathComponent("Library/Application Support/com.apple.TCC/TCC.db")
     ]
 
+    // Listing this directory is denied without Full Disk Access, and it is the
+    // folder the Focus readers depend on, so it works even when no single file exists.
+    private static let probeDirectory = home.appendingPathComponent("Library/DoNotDisturb/DB")
+
     static func hasPermission() -> Bool {
+        if (try? FileManager.default.contentsOfDirectory(atPath: probeDirectory.path)) != nil {
+            return true
+        }
         for url in probeURLs {
             if canReadProtectedResource(at: url) {
                 return true
