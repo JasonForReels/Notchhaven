@@ -32,7 +32,7 @@ By participating in this project, you agree to maintain a respectful, welcoming,
 
 ### Reporting Bugs
 
-If you find a bug, please check the [Issues](https://github.com/jackson-storm/DynamicNotch/issues) list first to see if it has already been reported. If not, feel free to open a new issue.
+If you find a bug, please check the [Issues](https://github.com/JasonForReels/Notchhaven/issues) list first to see if it has already been reported. If not, feel free to open a new issue.
 
 When reporting a bug, please include:
 1. **macOS Version** (e.g., macOS 14.6) and **Mac model** (e.g., MacBook Pro M3 Max).
@@ -78,7 +78,7 @@ To build and run DynamicNotch locally, you will need:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/jackson-storm/DynamicNotch.git
+   git clone https://github.com/JasonForReels/Notchhaven.git
    cd DynamicNotch
    ```
 2. **Open the project in Xcode:**

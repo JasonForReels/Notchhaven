@@ -590,6 +590,7 @@
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "DynamicNotch needs access to your calendar to display upcoming events in the notch.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "DynamicNotch needs access to your calendar to display upcoming events in the notch.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "DynamicNotch needs access to your camera to display a camera preview in the notch.";
+				INFOPLIST_KEY_CFBundleDisplayName = Notchhaven;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "The app requires local network access to determine the name of your current Wi-Fi network.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -598,7 +599,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.6.3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Jackson.DynamicNotch;
+				PRODUCT_BUNDLE_IDENTIFIER = com.JasonForReels.Notchhaven;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -655,6 +656,7 @@
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "DynamicNotch needs access to your calendar to display upcoming events in the notch.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "DynamicNotch needs access to your calendar to display upcoming events in the notch.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "DynamicNotch needs access to your camera to display a camera preview in the notch.";
+				INFOPLIST_KEY_CFBundleDisplayName = Notchhaven;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "The app requires local network access to determine the name of your current Wi-Fi network.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -663,7 +665,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.6.3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Jackson.DynamicNotch;
+				PRODUCT_BUNDLE_IDENTIFIER = com.JasonForReels.Notchhaven;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;

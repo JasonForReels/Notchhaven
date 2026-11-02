@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="DynamicNotch/Resources/Assets.xcassets/AppIcon.appiconset/logo256.png" alt="DynamicNotch logo" width="96" />
+  <img src="DynamicNotch/Resources/Assets.xcassets/AppIcon.appiconset/logo256.png" alt="Notchhaven logo" width="96" />
 </p>
 
-<h1 align="center">DynamicNotch</h1>
+<h1 align="center">Notchhaven</h1>
 
 <p align="center">
   <strong>Turn the MacBook notch into a living native surface.</strong>
 </p>
 
 <p align="center">
-  DynamicNotch is a native macOS app for notched MacBooks that turns the notch into a live system surface for media,
+  Notchhaven is a native macOS app for notched MacBooks that turns the notch into a live system surface for media,
   downloads, AirDrop, timers, screen recording, connectivity events, lock-screen transitions, and custom hardware HUDs.
 </p>
 
@@ -26,14 +26,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jackson-storm/DynamicNotch/releases">
-    <img src="https://img.shields.io/github/downloads/jackson-storm/DynamicNotch/total?style=for-the-badge&label=Downloads&logo=github&logoColor=white&color=28a745" alt="GitHub downloads" />
+  <a href="https://github.com/JasonForReels/Notchhaven/releases">
+    <img src="https://img.shields.io/github/downloads/JasonForReels/Notchhaven/total?style=for-the-badge&label=Downloads&logo=github&logoColor=white&color=28a745" alt="GitHub downloads" />
   </a>
-  <a href="https://github.com/jackson-storm/DynamicNotch/releases/latest">
-    <img src="https://img.shields.io/github/v/release/jackson-storm/DynamicNotch?style=for-the-badge&label=Latest%20Release&logo=github&logoColor=white&color=0a84ff" alt="Latest release" />
+  <a href="https://github.com/JasonForReels/Notchhaven/releases/latest">
+    <img src="https://img.shields.io/github/v/release/JasonForReels/Notchhaven?style=for-the-badge&label=Latest%20Release&logo=github&logoColor=white&color=0a84ff" alt="Latest release" />
   </a>
   <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/jackson-storm/DynamicNotch?style=for-the-badge&label=License&color=blueviolet" alt="License" />
+    <img src="https://img.shields.io/github/license/JasonForReels/Notchhaven?style=for-the-badge&label=License&color=blueviolet" alt="License" />
   </a>
   <img src="https://img.shields.io/badge/macOS-14.6%2B-red?style=for-the-badge&logo=apple&logoColor=white" alt="macOS 14.6 or later" />
 </p>
@@ -77,7 +77,7 @@ The main goal is to make the project as native as possible, both in terms of des
 
 ## 📦 Installation
 
-1. Download the latest DMG from the [Releases](https://github.com/jackson-storm/DynamicNotch/releases) page.
+1. Download the latest DMG from the [Releases](https://github.com/JasonForReels/Notchhaven/releases) page.
 2. Drag `DynamicNotch` into `Applications`.
 3. Launch the app.
 4. Grant the permissions needed for the features you want to use.
@@ -96,7 +96,7 @@ The main goal is to make the project as native as possible, both in terms of des
 ## 🛠️ Build From Source
 
 ```bash
-git clone https://github.com/jackson-storm/DynamicNotch.git
+git clone https://github.com/JasonForReels/Notchhaven.git
 cd DynamicNotch
 open DynamicNotch.xcodeproj
 ```
@@ -169,3 +169,7 @@ Special thanks to the following open-source projects and services that make Dyna
 ## 📄 License
 
 DynamicNotch is released under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
+
+---
+
+Notchhaven is a fork of [DynamicNotch](https://github.com/jackson-storm/DynamicNotch) by jackson-storm, licensed under GPL-3.0.

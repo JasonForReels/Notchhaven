@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notchhaven</title>
+<meta name="description" content="Turn the MacBook notch into a living native surface.">
+<style>
+  :root { --bg:#fff; --fg:#111; --muted:#666; --accent:#0a84ff; --card:#f4f4f6; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b0b0d; --fg:#f2f2f4; --muted:#9a9aa2; --card:#17171b; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width:880px; margin:0 auto; padding:0 16px 64px; }
+  .notch { width:180px; height:34px; margin:0 auto; background:#000; border-radius:0 0 18px 18px; box-shadow:0 0 0 1px rgba(128,128,128,.25); }
+  h1 { font-size:clamp(2.4rem,8vw,4rem); margin:32px 0 8px; text-align:center; letter-spacing:-.02em; }
+  .tag { text-align:center; color:var(--muted); font-size:1.2rem; margin:0 0 28px; }
+  .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:48px; }
+  .cta a { padding:12px 22px; border-radius:999px; text-decoration:none; font-weight:600; background:var(--accent); color:#fff; }
+  .cta a.alt { background:var(--card); color:var(--fg); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+  .card { background:var(--card); border-radius:16px; padding:18px; }
+  .card h3 { margin:0 0 6px; font-size:1.05rem; }
+  .card p { margin:0; color:var(--muted); font-size:.95rem; }
+  footer { margin-top:48px; text-align:center; color:var(--muted); font-size:.85rem; }
+  footer a { color:inherit; }
+</style>
+</head>
+<body>
+<div class="notch" aria-hidden="true"></div>
+<main>
+  <h1>Notchhaven</h1>
+  <p class="tag">Turn the MacBook notch into a living native surface.</p>
+  <div class="cta">
+    <a href="https://github.com/JasonForReels/Notchhaven/releases">Download</a>
+    <a class="alt" href="https://github.com/JasonForReels/Notchhaven">View on GitHub</a>
+  </div>
+  <section class="grid">
+    <div class="card"><h3>Media</h3><p>Now-playing controls and artwork right in the notch.</p></div>
+    <div class="card"><h3>Downloads &amp; AirDrop</h3><p>Live progress and transfers without leaving your work.</p></div>
+    <div class="card"><h3>Timers &amp; recording</h3><p>Timers and screen-recording status at a glance.</p></div>
+    <div class="card"><h3>System events</h3><p>Connectivity, lock-screen transitions and custom hardware HUDs.</p></div>
+  </section>
+  <footer>Requires macOS 14.6+. A fork of <a href="https://github.com/jackson-storm/DynamicNotch">DynamicNotch</a>, GPL-3.0.</footer>
+</main>
+</body>
+</html>
