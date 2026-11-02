@@ -50,6 +50,7 @@ final class MediaRemoteNowPlayingService: NowPlayingMonitoring, NowPlayingDetail
     private var errorPipe: Pipe?
     private var outputBuffer = ""
     private var lastSnapshot: NowPlayingSnapshot?
+    private var metadataAnchor = NowPlayingMetadataAnchor()
     private var favoriteRefreshTask: Task<Void, Never>?
     private var favoriteRefreshKey: String?
     private var applicationPlaybackRefreshTask: Task<Void, Never>?
@@ -536,6 +537,8 @@ private extension MediaRemoteNowPlayingService {
         ) {
             snapshot = snapshot.applying(applicationPlaybackState: applicationPlaybackState)
         }
+
+        snapshot = metadataAnchor.resolve(snapshot)
 
         return snapshot.hasVisibleMetadata ? snapshot : nil
     }
