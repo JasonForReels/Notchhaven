@@ -124,17 +124,6 @@ struct AboutAppSettingsView: View {
                 url: "https://github.com/JasonForReels/Notchhaven",
                 onRequestInternetAccess: onRequestInternetAccess
             )
-            
-            SettingsUrlRowView(
-                title: "settings.about.website.title",
-                description: "settings.about.website.desc",
-                imageName: "simplifiedLogo",
-                color: .clear,
-                cornerRadius: 30,
-                position: .last,
-                url: "https://dynamicnotch.evgeniy-petrukovich.workers.dev",
-                onRequestInternetAccess: onRequestInternetAccess
-            )
         }
     }
     
