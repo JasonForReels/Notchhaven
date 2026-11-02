@@ -216,9 +216,15 @@ final class ClaudeActivityCenter: ObservableObject {
                 if clipped != current.detail {
                     current.detail = clipped
                     self.activity = current
+                    self.publish(current)
                 }
             }
         }
+    }
+
+    /// Re-sends the live activity; the notch updates in place and animates to the new size.
+    private func publish(_ activity: ClaudeActivity) {
+        notchViewModel?.send(.showLiveActivity(ClaudeNotchContent(center: self, snapshot: activity)))
     }
 
     private func apply(_ next: ClaudeActivity?) {
@@ -232,9 +238,7 @@ final class ClaudeActivityCenter: ObservableObject {
             return
         }
 
-        if !wasShowing {
-            notchViewModel?.send(.showLiveActivity(ClaudeNotchContent(center: self)))
-        }
+        publish(next)
 
         if next.expands {
             // Give a freshly shown activity a moment to appear before expanding it.

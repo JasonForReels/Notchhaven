@@ -1,29 +1,58 @@
 import SwiftUI
 
+/// Sizes the notch from what Claude is doing, so short states stay small and
+/// long text gets room. Character widths are estimates for the fonts used below.
+enum ClaudeLayout {
+    static func compactExtraWidth(_ activity: ClaudeActivity?) -> CGFloat {
+        let label = activity?.compactLabel ?? activity?.headline ?? ""
+        return max(170, min(260, 110 + 7 * CGFloat(label.count)))
+    }
+
+    static func expandedExtraWidth(_ activity: ClaudeActivity?) -> CGFloat {
+        let text = (activity?.toolDetail ?? "") + (activity?.detail ?? "")
+        return text.isEmpty ? 250 : (text.count < 60 ? 290 : 340)
+    }
+
+    static func expandedExtraHeight(_ activity: ClaudeActivity?, width: CGFloat) -> CGFloat {
+        let usable = max(width - 76, 200)
+        func lines(_ text: String?, charWidth: CGFloat, limit: Int) -> Int {
+            guard let text, !text.isEmpty else { return 0 }
+            return min(limit, Int((CGFloat(text.count) * charWidth / usable).rounded(.up)))
+        }
+        let sentence = lines(activity?.toolDetail, charWidth: 8.5, limit: 2)
+        let narration = lines(activity?.detail, charWidth: 6.8, limit: 4)
+        return 56 + CGFloat(sentence) * 20 + CGFloat(narration) * 17
+    }
+}
+
 struct ClaudeNotchContent: NotchContentProtocol, DynamicIslandCustomizable {
     static let contentID = "claude.activity"
 
     let id = ClaudeNotchContent.contentID
     @MainActor let center: ClaudeActivityCenter
+    /// What was current when this content was sent; drives the sizes below.
+    let snapshot: ClaudeActivity?
 
     var priority: Int { NotchContentPriority.default }
     var isExpandable: Bool { true }
     var strokeColor: Color { Color(red: 0.85, green: 0.47, blue: 0.34).opacity(0.4) }
 
     func compactSize(baseWidth: CGFloat, baseHeight: CGFloat) -> CGSize {
-        .init(width: baseWidth + 210, height: baseHeight)
+        .init(width: baseWidth + ClaudeLayout.compactExtraWidth(snapshot), height: baseHeight)
     }
 
     func dynamicIslandSize(baseWidth: CGFloat, baseHeight: CGFloat) -> CGSize {
-        .init(width: baseWidth + 200, height: baseHeight)
+        .init(width: baseWidth + ClaudeLayout.compactExtraWidth(snapshot) - 10, height: baseHeight)
     }
 
     func expandedSize(baseWidth: CGFloat, baseHeight: CGFloat) -> CGSize {
-        .init(width: baseWidth + 330, height: baseHeight + 120)
+        let extra = ClaudeLayout.expandedExtraWidth(snapshot)
+        return .init(width: baseWidth + extra, height: baseHeight + ClaudeLayout.expandedExtraHeight(snapshot, width: baseWidth + extra))
     }
 
     func expandedDynamicIslandSize(baseWidth: CGFloat, baseHeight: CGFloat) -> CGSize {
-        .init(width: baseWidth + 340, height: baseHeight + 110)
+        let extra = ClaudeLayout.expandedExtraWidth(snapshot) + 10
+        return .init(width: baseWidth + extra, height: baseHeight + ClaudeLayout.expandedExtraHeight(snapshot, width: baseWidth + extra) - 10)
     }
 
     func expandedCornerRadius(baseRadius: CGFloat) -> (top: CGFloat, bottom: CGFloat) {

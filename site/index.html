@@ -3,44 +3,148 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Notchhaven</title>
-<meta name="description" content="Turn the MacBook notch into a living native surface.">
+<title>Notchhaven – a living notch for your Mac</title>
+<meta name="description" content="Notchhaven turns the MacBook notch into a live native surface for media, downloads, AirDrop, timers, HUDs and Claude Code activity.">
+<meta property="og:title" content="Notchhaven">
+<meta property="og:description" content="Turn the MacBook notch into a living native surface.">
+<meta property="og:image" content="img/Player.jpg">
+<link rel="icon" href="img/icon.png">
 <style>
-  :root { --bg:#fff; --fg:#111; --muted:#666; --accent:#0a84ff; --card:#f4f4f6; }
+  :root { --bg:#fff; --fg:#111; --muted:#666; --accent:#0a84ff; --card:#f4f4f6; --line:rgba(128,128,128,.25); }
   @media (prefers-color-scheme: dark) { :root { --bg:#0b0b0d; --fg:#f2f2f4; --muted:#9a9aa2; --card:#17171b; } }
   * { box-sizing:border-box; }
-  body { margin:0; font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--fg); }
-  main { max-width:880px; margin:0 auto; padding:0 16px 64px; }
-  .notch { width:180px; height:34px; margin:0 auto; background:#000; border-radius:0 0 18px 18px; box-shadow:0 0 0 1px rgba(128,128,128,.25); }
-  h1 { font-size:clamp(2.4rem,8vw,4rem); margin:32px 0 8px; text-align:center; letter-spacing:-.02em; }
-  .tag { text-align:center; color:var(--muted); font-size:1.2rem; margin:0 0 28px; }
-  .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:48px; }
-  .cta a { padding:12px 22px; border-radius:999px; text-decoration:none; font-weight:600; background:var(--accent); color:#fff; }
-  .cta a.alt { background:var(--card); color:var(--fg); }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
-  .card { background:var(--card); border-radius:16px; padding:18px; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--fg); }
+  a { color:var(--accent); }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 16px; }
+  nav { display:flex; align-items:center; justify-content:space-between; padding:16px 0; }
+  nav .brand { display:flex; align-items:center; gap:10px; font-weight:700; color:var(--fg); text-decoration:none; }
+  nav .brand img { width:28px; height:28px; border-radius:7px; }
+  nav .links { display:flex; gap:18px; font-size:.95rem; }
+  nav .links a { color:var(--muted); text-decoration:none; }
+  nav .links a:hover { color:var(--fg); }
+  .hero { text-align:center; padding:28px 0 40px; }
+  .pill { width:200px; height:36px; margin:0 auto 28px; background:#000; border-radius:0 0 20px 20px; box-shadow:0 0 0 1px var(--line); display:flex; align-items:center; justify-content:center; gap:8px; color:#fff; font-size:.75rem; overflow:hidden; }
+  .pill i { width:7px; height:7px; border-radius:50%; background:#30d158; animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity:.3; transform:scale(.7); } }
+  h1 { font-size:clamp(2.6rem,9vw,4.8rem); margin:0 0 12px; letter-spacing:-.03em; line-height:1.05; }
+  .tag { color:var(--muted); font-size:clamp(1.05rem,2.6vw,1.35rem); max-width:640px; margin:0 auto 28px; }
+  .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .btn { padding:12px 24px; border-radius:999px; text-decoration:none; font-weight:600; background:var(--accent); color:#fff; }
+  .btn.alt { background:var(--card); color:var(--fg); }
+  .shot { border-radius:18px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.28); border:1px solid var(--line); }
+  .shot img { display:block; width:100%; height:auto; }
+  .hero .shot { margin-top:44px; }
+  section { padding:56px 0 0; }
+  h2 { font-size:clamp(1.7rem,5vw,2.4rem); letter-spacing:-.02em; margin:0 0 8px; }
+  .sub { color:var(--muted); margin:0 0 28px; max-width:640px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
+  .card { background:var(--card); border-radius:16px; padding:20px; }
   .card h3 { margin:0 0 6px; font-size:1.05rem; }
   .card p { margin:0; color:var(--muted); font-size:.95rem; }
-  footer { margin-top:48px; text-align:center; color:var(--muted); font-size:.85rem; }
+  .gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
+  .gallery figure { margin:0; }
+  .gallery .shot { border-radius:14px; box-shadow:none; }
+  .gallery figcaption { text-align:center; color:var(--muted); font-size:.9rem; margin-top:8px; }
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:center; }
+  @media (max-width:760px) { .split { grid-template-columns:1fr; } nav .links { display:none; } }
+  pre { background:var(--card); border-radius:14px; padding:16px; overflow-x:auto; font-size:.82rem; line-height:1.5; border:1px solid var(--line); }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  ol.steps { padding-left:20px; color:var(--muted); } ol.steps li { margin-bottom:6px; } ol.steps b { color:var(--fg); }
+  footer { margin:72px 0 40px; padding-top:24px; border-top:1px solid var(--line); text-align:center; color:var(--muted); font-size:.85rem; }
   footer a { color:inherit; }
 </style>
 </head>
 <body>
-<div class="notch" aria-hidden="true"></div>
-<main>
-  <h1>Notchhaven</h1>
-  <p class="tag">Turn the MacBook notch into a living native surface.</p>
-  <div class="cta">
-    <a href="https://github.com/JasonForReels/Notchhaven/releases">Download</a>
-    <a class="alt" href="https://github.com/JasonForReels/Notchhaven">View on GitHub</a>
-  </div>
-  <section class="grid">
-    <div class="card"><h3>Media</h3><p>Now-playing controls and artwork right in the notch.</p></div>
-    <div class="card"><h3>Downloads &amp; AirDrop</h3><p>Live progress and transfers without leaving your work.</p></div>
-    <div class="card"><h3>Timers &amp; recording</h3><p>Timers and screen-recording status at a glance.</p></div>
-    <div class="card"><h3>System events</h3><p>Connectivity, lock-screen transitions and custom hardware HUDs.</p></div>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#"><img src="img/icon.png" alt="">Notchhaven</a>
+    <div class="links"><a href="#features">Features</a><a href="#gallery">Gallery</a><a href="#claude">Claude Code</a><a href="#install">Install</a></div>
+  </nav>
+
+  <header class="hero">
+    <div class="pill" aria-hidden="true"><i></i>Now playing</div>
+    <h1>The notch,<br>finally useful.</h1>
+    <p class="tag">Notchhaven turns the MacBook notch into a live native surface for media, downloads, AirDrop, timers, HUDs and even Claude Code.</p>
+    <div class="cta">
+      <a class="btn" href="https://github.com/JasonForReels/Notchhaven/releases">Download for macOS</a>
+      <a class="btn alt" href="https://github.com/JasonForReels/Notchhaven">View on GitHub</a>
+    </div>
+    <div class="shot"><img src="img/Player.jpg" alt="Now Playing in the notch with album art, progress and controls"></div>
+  </header>
+
+  <section id="features">
+    <h2>Built like part of macOS</h2>
+    <p class="sub">SwiftUI and AppKit, with its own engine that mirrors the spring physics and morphing of the iPhone Dynamic Island.</p>
+    <div class="grid">
+      <div class="card"><h3>Live Activities</h3><p>Now Playing with artwork, visualizer and lyrics; downloads, AirDrop, timers, screen recording, Focus, Personal Hotspot.</p></div>
+      <div class="card"><h3>Temporary alerts</h3><p>Charging, low and full battery, Bluetooth, Wi-Fi, VPN and volume/brightness HUDs.</p></div>
+      <div class="card"><h3>Lock screen</h3><p>Media and live activity surfaces that carry through lock and unlock transitions.</p></div>
+      <div class="card"><h3>Gestures</h3><p>Drag, swipe and scroll to dismiss or restore, with adaptive corners and swipe-aware blur.</p></div>
+      <div class="card"><h3>Fluid physics</h3><p>Jelly-like morphing, squash and stretch, and synchronized content interpolation.</p></div>
+      <div class="card"><h3>Works without a notch</h3><p>On non-notched Macs and external displays it becomes a floating Dynamic Island capsule.</p></div>
+      <div class="card"><h3>Deep customization</h3><p>Notch size, stroke, background, animation presets, display selection and fullscreen handling.</p></div>
+      <div class="card"><h3>38+ languages</h3><p>Fully localized interface, activities and settings, switchable instantly.</p></div>
+    </div>
   </section>
-  <footer>Requires macOS 14.6+. A fork of <a href="https://github.com/jackson-storm/DynamicNotch">DynamicNotch</a>, GPL-3.0.</footer>
-</main>
+
+  <section id="lock" class="split">
+    <div>
+      <h2>Lock screen, covered</h2>
+      <p class="sub" style="margin:0">Media and activities stay visible on the lock screen without stealing focus.</p>
+    </div>
+    <div class="shot"><img loading="lazy" src="img/LockScreen.jpg" alt="Notchhaven on the macOS lock screen"></div>
+  </section>
+
+  <section id="gallery">
+    <h2>Gallery</h2>
+    <p class="sub">A small selection of the states and alerts Notchhaven supports.</p>
+    <div class="gallery">
+      <figure><div class="shot"><img loading="lazy" src="img/Timer.jpg" alt="Timer"></div><figcaption>Timer</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/Tray.jpg" alt="Tray"></div><figcaption>Tray</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/Downloads.jpg" alt="Downloads"></div><figcaption>Downloads</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/Charging.jpg" alt="Charging"></div><figcaption>Charging</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/LowBattery.jpg" alt="Low battery"></div><figcaption>Low battery</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/FullBattery.jpg" alt="Full battery"></div><figcaption>Full battery</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/Bluetooth.jpg" alt="Bluetooth"></div><figcaption>Bluetooth</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/VpnConnection.jpg" alt="VPN"></div><figcaption>VPN</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/VolumeHud.jpg" alt="Volume HUD"></div><figcaption>Volume HUD</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/Hotspot.jpg" alt="Hotspot"></div><figcaption>Personal Hotspot</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/NoInternet.jpg" alt="No internet"></div><figcaption>No internet</figcaption></figure>
+      <figure><div class="shot"><img loading="lazy" src="img/FocusMode.jpg" alt="Focus mode"></div><figcaption>Focus mode</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="claude">
+    <h2>Claude Code in the notch</h2>
+    <p class="sub">See when Claude Code is thinking, running a tool, waiting on you, or done, with a snippet of its last reply. It's off by default and listens on loopback only (<code>127.0.0.1:26540</code>).</p>
+    <pre><code>{
+  "hooks": {
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "/path/to/Notchhaven/scripts/claude-notch-hook.sh" }] }],
+    "PreToolUse":       [ ... same hook ... ],
+    "Notification":     [ ... same hook ... ],
+    "Stop":             [ ... same hook ... ],
+    "SessionEnd":       [ ... same hook ... ]
+  }
+}</code></pre>
+    <p class="sub">Turn on <b>Show Claude Activity</b> in the menu bar menu, then add the hooks above to <code>~/.claude/settings.json</code>.</p>
+  </section>
+
+  <section id="install">
+    <h2>Get started</h2>
+    <ol class="steps">
+      <li><b>Download</b> the latest DMG from <a href="https://github.com/JasonForReels/Notchhaven/releases">Releases</a>.</li>
+      <li><b>Drag</b> the app into Applications and launch it.</li>
+      <li><b>Grant</b> permissions for the features you want (Accessibility, Bluetooth, Screen Recording, Media).</li>
+      <li>If macOS blocks the first launch, allow it in System Settings → Privacy &amp; Security.</li>
+    </ol>
+    <p class="sub">Requires macOS 14.6 or later. Open source under GPL-3.0.</p>
+  </section>
+
+  <footer>
+    Notchhaven is a fork of <a href="https://github.com/jackson-storm/DynamicNotch">DynamicNotch</a> by jackson-storm, licensed under GPL-3.0.<br>
+    <a href="https://github.com/JasonForReels/Notchhaven">GitHub</a> · <a href="https://github.com/JasonForReels/Notchhaven/releases">Releases</a>
+  </footer>
+</div>
 </body>
 </html>

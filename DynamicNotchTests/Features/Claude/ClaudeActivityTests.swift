@@ -84,3 +84,22 @@ final class ClaudeToolLabelTests: XCTestCase {
         XCTAssertEqual(ClaudeActivityReducer.toolLabel("Bash"), "Bash")
     }
 }
+
+final class ClaudeLayoutTests: XCTestCase {
+    private func activity(label: String = "Read", tool: String? = nil, detail: String = "") -> ClaudeActivity {
+        ClaudeActivity(phase: .working, headline: "Running \(label)", detail: detail, project: "p", compactLabel: label, toolDetail: tool)
+    }
+
+    func testCompactWidthGrowsWithLabelButStaysBounded() {
+        XCTAssertEqual(ClaudeLayout.compactExtraWidth(activity(label: "Read")), 170)
+        XCTAssertGreaterThan(ClaudeLayout.compactExtraWidth(activity(label: "list all the files")), 220)
+        XCTAssertEqual(ClaudeLayout.compactExtraWidth(activity(label: String(repeating: "x", count: 80))), 260)
+    }
+
+    func testExpandedHeightFollowsContent() {
+        let short = ClaudeLayout.expandedExtraHeight(activity(tool: "Reading A.swift"), width: 600)
+        let long = ClaudeLayout.expandedExtraHeight(activity(tool: "Reading A.swift", detail: String(repeating: "word ", count: 80)), width: 600)
+        XCTAssertGreaterThan(long, short)
+        XCTAssertLessThanOrEqual(long, 56 + 2 * 20 + 4 * 17)
+    }
+}
