@@ -1,0 +1,14 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build-test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare Preview Content
+        run: mkdir -p "DynamicNotch/Resources/Preview Content"
+      - name: Build and test
+        run: xcodebuild test -scheme DynamicNotch -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO -only-testing:DynamicNotchTests

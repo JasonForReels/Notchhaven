@@ -175,7 +175,7 @@ struct AboutAppSettingsView: View {
                 color: .clear,
                 cornerRadius: 30,
                 position: .middle,
-                url: "https://github.com/jackson-storm/DynamicNotch",
+                url: "https://github.com/JasonForReels/Notchhaven",
                 onRequestInternetAccess: onRequestInternetAccess
             )
             
