@@ -51,9 +51,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         super.init()
     }
     
+    /// Keeps a single copy running: if another instance with our bundle ID is
+    /// already alive, bring it forward and quit this one.
+    private func yieldToExistingInstance() -> Bool {
+        guard let bundleIdentifier = Bundle.main.bundleIdentifier else { return false }
+
+        let currentPID = ProcessInfo.processInfo.processIdentifier
+        let others = NSRunningApplication
+            .runningApplications(withBundleIdentifier: bundleIdentifier)
+            .filter { $0.processIdentifier != currentPID && !$0.isTerminated }
+
+        guard let existing = others.first else { return false }
+
+        existing.activate()
+        NSApp.terminate(nil)
+        return true
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard !AppEnvironment.isRunningUnitTests else {
             // Running as test host for unit tests: do not start UI, windows, monitors, or permission prompts.
+            return
+        }
+
+        guard !yieldToExistingInstance() else {
             return
         }
 

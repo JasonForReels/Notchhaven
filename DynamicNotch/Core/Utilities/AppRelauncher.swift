@@ -15,11 +15,12 @@ enum AppRelauncher {
         process.arguments = [
             "-c",
                 """
-                sleep 0.5
+                while kill -0 "$2" 2>/dev/null; do sleep 0.1; done
                 open -n "$1"
                 """,
             "sh",
-            Bundle.main.bundlePath
+            Bundle.main.bundlePath,
+            String(ProcessInfo.processInfo.processIdentifier)
         ]
         
         do {
