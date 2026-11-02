@@ -27,6 +27,23 @@ final class ClaudeActivityTests: XCTestCase {
         XCTAssertEqual(activity?.detail.count, ClaudeActivityReducer.maxDetailLength + 1)
     }
 
+    func testExpandsForThinkingWaitingDoneButNotTools() throws {
+        func expands(_ json: String) throws -> Bool? {
+            ClaudeActivityReducer.reduce(try payload(json)) { _ in "narration" }?.expands
+        }
+        XCTAssertEqual(try expands(#"{"hook_event_name":"UserPromptSubmit","prompt":"x"}"#), true)
+        XCTAssertEqual(try expands(#"{"hook_event_name":"Notification","message":"x"}"#), true)
+        XCTAssertEqual(try expands(#"{"hook_event_name":"Stop","transcript_path":"/x.jsonl"}"#), true)
+        XCTAssertEqual(try expands(#"{"hook_event_name":"PreToolUse","tool_name":"Read","transcript_path":"/x.jsonl"}"#), false)
+    }
+
+    func testToolEventShowsNarrationAndShortLabel() throws {
+        let p = try payload(#"{"hook_event_name":"PreToolUse","tool_name":"Read","transcript_path":"/x.jsonl"}"#)
+        let activity = ClaudeActivityReducer.reduce(p) { _ in "Reading the config first" }
+        XCTAssertEqual(activity?.detail, "Reading the config first")
+        XCTAssertEqual(activity?.compactLabel, "Read")
+    }
+
     func testSessionEndHides() throws {
         XCTAssertNil(ClaudeActivityReducer.reduce(try payload(#"{"hook_event_name":"SessionEnd"}"#)) { _ in nil })
     }

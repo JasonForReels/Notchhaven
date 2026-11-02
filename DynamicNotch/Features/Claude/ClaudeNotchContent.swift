@@ -11,11 +11,11 @@ struct ClaudeNotchContent: NotchContentProtocol, DynamicIslandCustomizable {
     var strokeColor: Color { Color(red: 0.85, green: 0.47, blue: 0.34).opacity(0.4) }
 
     func compactSize(baseWidth: CGFloat, baseHeight: CGFloat) -> CGSize {
-        .init(width: baseWidth + 170, height: baseHeight)
+        .init(width: baseWidth + 210, height: baseHeight)
     }
 
     func dynamicIslandSize(baseWidth: CGFloat, baseHeight: CGFloat) -> CGSize {
-        .init(width: baseWidth + 160, height: baseHeight)
+        .init(width: baseWidth + 200, height: baseHeight)
     }
 
     func expandedSize(baseWidth: CGFloat, baseHeight: CGFloat) -> CGSize {
@@ -54,41 +54,27 @@ private enum ClaudeStyle {
         }
     }
 
-    static func symbol(for phase: ClaudePhase) -> String {
-        switch phase {
-        case .working: "sparkle"
-        case .waiting: "hand.raised.fill"
-        case .done: "checkmark.circle.fill"
-        }
-    }
 }
 
 private struct ClaudeCompactView: View {
     @ObservedObject var center: ClaudeActivityCenter
     @Environment(\.notchScale) private var scale
     @Environment(\.isNotchlessScreen) private var isNotchlessScreen
-    @State private var pulse = false
 
     /// The hardware notch hides the middle of the bar, so only an icon (left)
     /// and a short label (right) go here; the full text lives in the expanded view.
     var body: some View {
         let phase = center.activity?.phase ?? .working
         HStack {
-            Image(systemName: ClaudeStyle.symbol(for: phase))
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(ClaudeStyle.color(for: phase))
-                .opacity(phase == .working && pulse ? 0.45 : 1)
+            ClaudeOrbView(phase: phase, size: 26)
             Spacer()
-            Text(center.activity?.headline ?? "")
+            Text(center.activity?.compactLabel ?? center.activity?.headline ?? "")
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(ClaudeStyle.color(for: phase))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
         .padding(.horizontal, isNotchlessScreen ? 10.scaled(by: scale) : 16.scaled(by: scale))
-        .onAppear {
-            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { pulse = true }
-        }
     }
 }
 
@@ -101,9 +87,7 @@ private struct ClaudeExpandedView: View {
         let phase = activity?.phase ?? .working
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
-                Image(systemName: ClaudeStyle.symbol(for: phase))
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(ClaudeStyle.color(for: phase))
+                ClaudeOrbView(phase: phase, size: 30)
                 Text(activity?.headline ?? "")
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundStyle(ClaudeStyle.color(for: phase))

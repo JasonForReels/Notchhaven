@@ -12,6 +12,10 @@ struct ClaudeActivity: Equatable {
     var headline: String
     var detail: String
     var project: String
+    /// Short text for the compact bar, where room beside the hardware notch is tight.
+    var compactLabel: String? = nil
+    /// Whether the notch should open to its expanded view for this state.
+    var expands: Bool = false
 }
 
 /// Hook payload as sent by Claude Code (`hook_event_name` plus event fields).
@@ -34,14 +38,21 @@ enum ClaudeActivityReducer {
 
         switch payload.hook_event_name {
         case "UserPromptSubmit":
-            return .init(phase: .working, headline: "Thinking", detail: clip(payload.prompt ?? ""), project: project)
+            return .init(phase: .working, headline: "Thinking", detail: clip(payload.prompt ?? ""), project: project, expands: true)
         case "PreToolUse":
-            return .init(phase: .working, headline: payload.tool_name.map { "Running \(toolLabel($0))" } ?? "Working", detail: "", project: project)
+            let narration = payload.transcript_path.flatMap(lastReply) ?? ""
+            return .init(
+                phase: .working,
+                headline: payload.tool_name.map { "Running \(toolLabel($0))" } ?? "Working",
+                detail: clip(narration),
+                project: project,
+                compactLabel: payload.tool_name.map(toolLabel)
+            )
         case "Notification":
-            return .init(phase: .waiting, headline: "Needs you", detail: clip(payload.message ?? ""), project: project)
+            return .init(phase: .waiting, headline: "Needs you", detail: clip(payload.message ?? ""), project: project, expands: true)
         case "Stop":
             let reply = payload.transcript_path.flatMap(lastReply) ?? ""
-            return .init(phase: .done, headline: "Done", detail: clip(reply), project: project)
+            return .init(phase: .done, headline: "Done", detail: clip(reply), project: project, expands: true)
         case "SessionEnd":
             return nil
         default:
@@ -98,6 +109,8 @@ final class ClaudeActivityCenter: ObservableObject {
     private var server: ClaudeEventServer?
     private weak var notchViewModel: NotchViewModel?
     private var hideTask: Task<Void, Never>?
+    private var expandTask: Task<Void, Never>?
+    private var isExpandedByClaude = false
     private var defaultsObserver: AnyCancellable?
 
     func start(notchViewModel: NotchViewModel) {
@@ -142,13 +155,29 @@ final class ClaudeActivityCenter: ObservableObject {
     private func apply(_ next: ClaudeActivity?) {
         let wasShowing = activity != nil
         activity = next
+        expandTask?.cancel()
 
-        if next != nil {
-            if !wasShowing {
-                notchViewModel?.send(.showLiveActivity(ClaudeNotchContent(center: self)))
+        guard let next else {
+            isExpandedByClaude = false
+            if wasShowing { notchViewModel?.send(.hideLiveActivity(id: ClaudeNotchContent.contentID)) }
+            return
+        }
+
+        if !wasShowing {
+            notchViewModel?.send(.showLiveActivity(ClaudeNotchContent(center: self)))
+        }
+
+        if next.expands {
+            // Give a freshly shown activity a moment to appear before expanding it.
+            expandTask = Task { [weak self] in
+                try? await Task.sleep(for: .milliseconds(wasShowing ? 50 : 450))
+                guard !Task.isCancelled, let self else { return }
+                self.notchViewModel?.expandActiveLiveActivity()
+                self.isExpandedByClaude = true
             }
-        } else if wasShowing {
-            notchViewModel?.send(.hideLiveActivity(id: ClaudeNotchContent.contentID))
+        } else if isExpandedByClaude {
+            isExpandedByClaude = false
+            notchViewModel?.handleOutsideClick()
         }
     }
 }
