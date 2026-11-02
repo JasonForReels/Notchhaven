@@ -80,6 +80,10 @@ export default function App() {
             <figure key={file}><Shot name={file} alt={label} lazy /><figcaption>{label}</figcaption></figure>
           ))}
         </div>
+        <p className="credit">
+          Image credits: screenshots from the <a href="https://github.com/jackson-storm/DynamicNotch">DynamicNotch</a> README
+          by jackson-storm (GPL-3.0). Desktop wallpaper is macOS, &copy; Apple Inc. Album art shown belongs to its respective owners.
+        </p>
       </section>
 
       <section id="claude">
@@ -101,7 +105,7 @@ export default function App() {
       </section>
 
       <footer>
-        Notchhaven is a fork of <a href="https://github.com/jackson-storm/DynamicNotch">DynamicNotch</a> by jackson-storm, licensed under GPL-3.0.<br />
+        Notchhaven is a fork of <a href="https://github.com/jackson-storm/DynamicNotch">DynamicNotch</a> by jackson-storm, licensed under GPL-3.0. Screenshots courtesy of the upstream project.<br />
         <a href={REPO}>GitHub</a> · <a href={`${REPO}/releases`}>Releases</a>
       </footer>
     </div>
