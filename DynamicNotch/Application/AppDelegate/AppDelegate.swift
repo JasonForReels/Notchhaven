@@ -68,6 +68,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        HomeWindowController.shared.showWindow()
+        return true
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard !AppEnvironment.isRunningUnitTests else {
             // Running as test host for unit tests: do not start UI, windows, monitors, or permission prompts.
@@ -91,6 +96,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         observeLockScreenWindowHandoff()
         
         SettingsWindowController.shared.setupDependencies(appDelegate: self)
+        HomeWindowController.shared.setupDependencies(appDelegate: self)
 
         if !isRunningUITests {
             createNotchWindow()

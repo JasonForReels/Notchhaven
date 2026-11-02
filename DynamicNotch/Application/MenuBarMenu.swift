@@ -32,6 +32,13 @@ struct MenuBarMenu: View {
             Divider()
             
             Button {
+                HomeWindowController.shared.showWindow()
+            } label: {
+                Image(systemName: "house")
+                Text(locale.dn("menuBar.openHome", fallback: "Open Notchhaven"))
+            }
+
+            Button {
                 updater.checkForUpdates()
             } label: {
                 Image(systemName: "arrow.down.circle")
