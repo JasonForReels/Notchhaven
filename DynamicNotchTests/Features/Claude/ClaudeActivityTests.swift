@@ -44,6 +44,17 @@ final class ClaudeActivityTests: XCTestCase {
         XCTAssertEqual(activity?.compactLabel, "Read")
     }
 
+    func testToolSentenceDescribesWhatClaudeIsDoing() throws {
+        func sentence(_ json: String) throws -> String? {
+            ClaudeActivityReducer.reduce(try payload(json)) { _ in nil }?.toolDetail
+        }
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Read","tool_input":{"file_path":"/a/b/File.swift"}}"#), "Reading File.swift")
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Edit","tool_input":{"file_path":"/a/Other.swift"}}"#), "Editing Other.swift")
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"ls","description":"List files"}}"#), "Running: List files")
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"Grep","tool_input":{"pattern":"TODO"}}"#), "Searching for TODO")
+        XCTAssertEqual(try sentence(#"{"hook_event_name":"PreToolUse","tool_name":"mcp__x__make_thing"}"#), "Using make thing")
+    }
+
     func testSessionEndHides() throws {
         XCTAssertNil(ClaudeActivityReducer.reduce(try payload(#"{"hook_event_name":"SessionEnd"}"#)) { _ in nil })
     }

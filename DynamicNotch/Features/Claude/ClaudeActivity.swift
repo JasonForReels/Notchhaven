@@ -16,6 +16,8 @@ struct ClaudeActivity: Equatable {
     var compactLabel: String? = nil
     /// Whether the notch should open to its expanded view for this state.
     var expands: Bool = false
+    /// Plain-language sentence for what Claude is doing right now.
+    var toolDetail: String? = nil
 }
 
 /// Hook payload as sent by Claude Code (`hook_event_name` plus event fields).
@@ -27,6 +29,17 @@ struct ClaudeHookPayload: Decodable {
     let message: String?
     let prompt: String?
     let transcript_path: String?
+    let tool_input: ToolInput?
+
+    struct ToolInput: Decodable {
+        let file_path: String?
+        let path: String?
+        let command: String?
+        let description: String?
+        let pattern: String?
+        let query: String?
+        let url: String?
+    }
 }
 
 enum ClaudeActivityReducer {
@@ -46,7 +59,8 @@ enum ClaudeActivityReducer {
                 headline: payload.tool_name.map { "Running \(toolLabel($0))" } ?? "Working",
                 detail: clip(narration),
                 project: project,
-                compactLabel: payload.tool_name.map(toolLabel)
+                compactLabel: payload.tool_name.map(toolLabel),
+                toolDetail: toolSentence(name: payload.tool_name, input: payload.tool_input)
             )
         case "Notification":
             return .init(phase: .waiting, headline: "Needs you", detail: clip(payload.message ?? ""), project: project, expands: true)
@@ -57,6 +71,36 @@ enum ClaudeActivityReducer {
             return nil
         default:
             return nil
+        }
+    }
+
+    /// A plain sentence for what a tool call is about to do, e.g. "Reading File.swift".
+    static func toolSentence(name: String?, input: ClaudeHookPayload.ToolInput?) -> String? {
+        guard let name else { return nil }
+        func file(_ i: ClaudeHookPayload.ToolInput?) -> String? {
+            (i?.file_path ?? i?.path).map { URL(fileURLWithPath: $0).lastPathComponent }
+        }
+        switch name {
+        case "Read":
+            return file(input).map { "Reading \($0)" } ?? "Reading a file"
+        case "Edit", "MultiEdit", "NotebookEdit":
+            return file(input).map { "Editing \($0)" } ?? "Editing a file"
+        case "Write":
+            return file(input).map { "Writing \($0)" } ?? "Writing a file"
+        case "Bash":
+            return input?.description.flatMap { $0.isEmpty ? nil : "Running: \(clip($0))" }
+                ?? input?.command.map { "Running: \(clip($0))" }
+                ?? "Running a command"
+        case "Grep", "Glob":
+            return (input?.pattern).map { "Searching for \(clip($0))" } ?? "Searching the project"
+        case "WebFetch":
+            return (input?.url).map { "Fetching \(clip($0))" } ?? "Fetching a web page"
+        case "WebSearch":
+            return (input?.query).map { "Searching the web for \(clip($0))" } ?? "Searching the web"
+        case "Task", "Agent":
+            return input?.description.map { "Delegating: \(clip($0))" } ?? "Delegating to a subagent"
+        default:
+            return "Using \(toolLabel(name))"
         }
     }
 
@@ -111,6 +155,8 @@ final class ClaudeActivityCenter: ObservableObject {
     private var hideTask: Task<Void, Never>?
     private var expandTask: Task<Void, Never>?
     private var isExpandedByClaude = false
+    private var transcriptPath: String?
+    private var pollTask: Task<Void, Never>?
     private var defaultsObserver: AnyCancellable?
 
     func start(notchViewModel: NotchViewModel) {
@@ -140,7 +186,9 @@ final class ClaudeActivityCenter: ObservableObject {
     func ingest(_ data: Data) {
         guard isEnabled, let payload = try? JSONDecoder().decode(ClaudeHookPayload.self, from: data) else { return }
         let next = ClaudeActivityReducer.reduce(payload, lastReply: ClaudeActivityReducer.lastAssistantText(inTranscriptAt:))
+        transcriptPath = payload.transcript_path ?? transcriptPath
         apply(next)
+        updatePolling(for: next)
 
         hideTask?.cancel()
         if next?.phase == .done {
@@ -148,6 +196,27 @@ final class ClaudeActivityCenter: ObservableObject {
                 try? await Task.sleep(for: .seconds(Self.doneLingerSeconds))
                 guard !Task.isCancelled else { return }
                 self?.apply(nil)
+            }
+        }
+    }
+
+    /// While Claude works, keep the shown narration in step with the transcript
+    /// so it reads like live thinking between hook events.
+    private func updatePolling(for next: ClaudeActivity?) {
+        pollTask?.cancel()
+        guard next?.phase == .working, let path = transcriptPath else { return }
+
+        pollTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(1.5))
+                guard !Task.isCancelled, let self,
+                      var current = self.activity, current.phase == .working,
+                      let text = ClaudeActivityReducer.lastAssistantText(inTranscriptAt: path) else { continue }
+                let clipped = ClaudeActivityReducer.clip(text)
+                if clipped != current.detail {
+                    current.detail = clipped
+                    self.activity = current
+                }
             }
         }
     }

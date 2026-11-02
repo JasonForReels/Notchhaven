@@ -117,11 +117,19 @@ private struct ClaudeExpandedView: View {
                         .lineLimit(1)
                 }
             }
+            if let tool = activity?.toolDetail, !tool.isEmpty {
+                Text(tool)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(2)
+                    .truncationMode(.middle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             if let detail = activity?.detail, !detail.isEmpty {
                 Text(detail)
-                    .font(.system(size: 14))
-                    .foregroundStyle(.white.opacity(0.92))
-                    .lineLimit(5)
+                    .font(.system(size: 13))
+                    .foregroundStyle(.white.opacity(0.7))
+                    .lineLimit(4)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
