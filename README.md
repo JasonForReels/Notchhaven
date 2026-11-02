@@ -1,21 +1,21 @@
 <p align="center">
-  <img src="DynamicNotch/Resources/Assets.xcassets/AppIcon.appiconset/logo256.png" alt="DynamicNotch logo" width="96" />
+  <img src="assets/logo.png" alt="Notchhaven logo" width="96" />
 </p>
 
-<h1 align="center">DynamicNotch</h1>
+<h1 align="center">Notchhaven</h1>
 
 <p align="center">
   <strong>Turn the MacBook notch into a living native surface.</strong>
 </p>
 
 <p align="center">
-  DynamicNotch is a native macOS app for notched MacBooks that turns the notch into a live system surface for media,
+  Notchhaven is a native macOS app for notched MacBooks that turns the notch into a live system surface for media,
   downloads, AirDrop, timers, screen recording, connectivity events, lock-screen transitions, and custom hardware HUDs.
 </p>
 
 <p align="center">
   <a href="mailto:jasonlook09@yahoo.com?subject=A%20question%20about%20Dynamic%20Notch">
-    <img src="https://img.shields.io/badge/Email-Contact%20Me-0A84FF?style=for-the-badge&logo=icloud&logoColor=white&labelColor=0A84FF" alt="Send an email about DynamicNotch" />
+    <img src="https://img.shields.io/badge/Email-Contact%20Me-0A84FF?style=for-the-badge&logo=icloud&logoColor=white&labelColor=0A84FF" alt="Send an email about Notchhaven" />
   </a>
 </p>
 
@@ -33,11 +33,11 @@
 </p>
 
 <p align="center">
-  <img src="assets/readme/Player.png" alt="DynamicNotch preview" width="100%" />
-  <img src="assets/readme/LockScreen.png" alt="DynamicNotch preview" width="100%" />
+  <img src="assets/readme/Player.png" alt="Notchhaven preview" width="100%" />
+  <img src="assets/readme/LockScreen.png" alt="Notchhaven preview" width="100%" />
 </p>
 
-## 🧐 Why DynamicNotch
+## 🧐 Why Notchhaven
 
 The app is built with SwiftUI and AppKit, so the notch window, settings UI, and event handling feel
 like part of macOS rather than a web-style overlay.
@@ -63,7 +63,7 @@ The main goal is to make the project as native as possible, both in terms of des
 ## 📦 Installation
 
 1. Download the latest DMG from the [Releases](https://github.com/JasonForReels/Notchhaven/releases) page.
-2. Drag `DynamicNotch` into `Applications`.
+2. Drag `Notchhaven` into `Applications`.
 3. Launch the app.
 4. Grant the permissions needed for the features you want to use.
 5. If macOS blocks the first launch, allow it from `System Settings > Privacy & Security`.
@@ -82,8 +82,8 @@ The main goal is to make the project as native as possible, both in terms of des
 
 ```bash
 git clone https://github.com/JasonForReels/Notchhaven.git
-cd DynamicNotch
-open DynamicNotch.xcodeproj
+cd Notchhaven
+open Notchhaven.xcodeproj
 ```
 
 Then run the `DynamicNotch` scheme from Xcode. Swift Package Manager dependencies are resolved by the project.
@@ -113,7 +113,7 @@ Then run the `DynamicNotch` scheme from Xcode. Swift Package Manager dependencie
   </tr>
 </table>
 
-> **Note:** This gallery displays only a selection of the events, live activities, and temporary alerts supported by DynamicNotch. Many other states, animations, and system transitions are supported.
+> **Note:** This gallery displays only a selection of the events, live activities, and temporary alerts supported by Notchhaven. Many other states, animations, and system transitions are supported.
 
 ## 🧰 Tech Stack
 
@@ -124,11 +124,11 @@ Then run the `DynamicNotch` scheme from Xcode. Swift Package Manager dependencie
 
 ## 🌍 Localization
 
-DynamicNotch features full native localization support for **38+ languages** across interface elements, notch activities, and settings. You can switch languages instantly in the app settings.
+Notchhaven features full native localization support for **38+ languages** across interface elements, notch activities, and settings. You can switch languages instantly in the app settings.
 
 ## 🤝 Acknowledgements
 
-Special thanks to the following open-source projects and services that make DynamicNotch possible:
+Special thanks to the following open-source projects and services that make Notchhaven possible:
 
 - [Lottie for iOS](https://github.com/airbnb/lottie-ios) — for rendering premium, smooth vector animations.
 - [LRCLIB](https://lrclib.net) — for providing the main engine for synchronized lyrics search.
@@ -137,4 +137,4 @@ Special thanks to the following open-source projects and services that make Dyna
 
 ## 📄 License
 
-DynamicNotch is released under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
+Notchhaven is released under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
